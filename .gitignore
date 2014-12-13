@@ -98,3 +98,7 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+*.txt
+*.xml
+.idea/IPLocale.iml
+.idea/.name
