@@ -32,7 +32,7 @@ class ThreadProxy(threading.Thread):
         opener = self.init_proxy(proto,proxy_address)
         try:
             start = time.clock()
-            data = opener.open(self.test_url).read()
+            data = opener.open(self.test_url,timeout = 2 ).read()
             cost = (time.clock()   - start) * 1000
             print u"%s 验证成功.  耗时: %s ms" % (proxy_address,cost)
             return  True,cost
@@ -45,6 +45,7 @@ class ThreadProxy(threading.Thread):
     def run(self):
         while True:
             proxy_item = self.queue.get()
+            time.sleep(0.1)
             is_work,cost = self.verify_proxy(proxy_item['proto'],proxy_item['proxy_address'])
             if is_work:
                 item = {}
@@ -93,7 +94,10 @@ def get_proxy_ip(url):
                 ip = td_list[0].text.strip()
                 port = td_list[1].text.strip()
                 proxy_address = ip + ':' + port
-                proxy_list.append(proxy_address)
+                item = {}
+                item['proto'] = 'http'
+                item['proxy_address'] = proxy_address
+                proxy_list.append(item)
         return proxy_list
     except  urllib2.HTTPError   as e    :#还可能会有403/500错误
         print   u'服务器错误'
@@ -111,7 +115,7 @@ def get_proxy_ip(url):
 
 
 def main():
-    '''
+
     hosts = ["http://www.cz88.net/proxy/index.aspx"]
     proxy_list = []
     url_list = get_download_links(hosts[0])
@@ -119,18 +123,22 @@ def main():
         proxy_list.extend(get_proxy_ip(url))
     with open('proxy.txt','w') as fw:
         for ip_address in proxy_list:
-            fw.write(ip_address+'\n')
-    '''
+            fw.write(ip_address['proxy_address']+'\n')
+
+
+
+
     proxy_list = []
-    with open('xici_proxy.txt') as fr:
+    with open('proxy.txt') as fr:
         for line in fr:
-            words = line.split('=')
-            proto = words[0].strip()
-            proxy_address = words[1].strip()
+            proxy_address = line.strip()
             item = {}
-            item['proto'] = proto
+            item['proto'] = 'http'
             item['proxy_address'] = proxy_address
             proxy_list.append(item)
+
+
+
     for i in xrange(20):
         t = ThreadProxy(queue,out_queue)
         t.setDaemon(True)
