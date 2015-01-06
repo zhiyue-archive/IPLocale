@@ -228,7 +228,7 @@ def get_ip_location(url, max_length):
             print u'网络错误:{}\t{}\t{}\n'.format(str(ip), str(proxy_address), proxy_error_dic.get(proxy_address))
             # print   u'错误内容',e
             save_faile_ip(ip + '\n')
-        except Exception as e:
+        except Exception:
             proxy_error_count(proxy_address)
             print u'失败ip:{}\t{}\t{}\n'.format(str(ip), str(proxy_address), proxy_error_dic.get(proxy_error_count))
             save_faile_ip(ip + '\n')
@@ -263,7 +263,7 @@ def remove_proxy(proxy_address):
     try:
         n = proxy_list.index(proxy_address)
         del proxy_list[n]
-    except Exception as e:
+    except Exception:
         pass
 
 
@@ -272,12 +272,13 @@ def currrent_count_add():
     global current_count
     current_count += 1
 
-
-def write_to_file(result):
+'''
+def write_to_file(result_buffer):
     global result_file
     with open('ip_location.txt', 'a') as result_file:
-        for item in result:
+        for item in result_buffer:
             result_file.write(item)
+'''
 
 
 def write_to_file(filename, data_set):
